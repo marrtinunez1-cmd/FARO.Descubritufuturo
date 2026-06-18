@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FARO · Descubrí tu futuro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white:#ffffff;
+    --navy-900:#0B2545;
+    --blue-800:#163B63;
+    --blue-700:#1C4E82;
+    --blue-600:#2566A8;
+    --blue-500:#3D7DC2;
+    --blue-400:#6FA0D6;
+    --blue-200:#BFD9F2;
+    --blue-100:#DCEAFB;
+    --blue-50:#F2F8FE;
+    --gray-600:#5B6B7B;
+    --gray-400:#94A3B3;
+    --error:#A8392F;
+    --radius-lg:18px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --shadow:0 6px 24px rgba(11,37,69,0.08);
+    --font-display:'Poppins',sans-serif;
+    --font-body:'Inter',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--white);
+    color:var(--navy-900);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:640px;margin:0 auto;padding:0 20px 60px;}
+
+  /* ===== Header ===== */
+  .topbar{
+    position:relative;
+    padding:28px 20px 22px;
+    text-align:center;
+    overflow:hidden;
+    border-bottom:1px solid var(--blue-100);
+    margin-bottom:28px;
+  }
+  .beam{
+    position:absolute;
+    top:-120px; left:50%;
+    width:320px; height:320px;
+    transform:translateX(-50%);
+    background:conic-gradient(from 0deg, transparent 0deg, var(--blue-100) 18deg, transparent 40deg, transparent 360deg);
+    animation:sweep 7s linear infinite;
+    pointer-events:none;
+    opacity:.8;
+  }
+  @media (prefers-reduced-motion: reduce){ .beam{animation:none;} }
+  @keyframes sweep{ to{ transform:translateX(-50%) rotate(360deg); } }
+  .brand{position:relative; display:flex; flex-direction:column; align-items:center; gap:6px;}
+  .brand-mark{display:flex; align-items:center; gap:10px;}
+  .brand-name{
+    font-family:var(--font-display); font-weight:700; font-size:28px;
+    letter-spacing:1px; color:var(--blue-800); margin:0;
+  }
+  .brand-tagline{font-size:14px; color:var(--gray-600); margin:0;}
+  .ods-badge{
+    margin-top:6px; display:inline-flex; align-items:center; gap:6px;
+    font-size:11.5px; font-weight:600; color:var(--blue-700);
+    background:var(--blue-50); border:1px solid var(--blue-200);
+    padding:4px 10px; border-radius:999px;
+  }
+
+  /* ===== Stepper ===== */
+  .stepper{display:flex; justify-content:center; gap:6px; margin-bottom:28px;}
+  .step-pill{
+    flex:1; max-width:120px; text-align:center; font-size:12px; font-weight:600;
+    color:var(--gray-400); padding-bottom:8px; border-bottom:3px solid var(--blue-100);
+    transition:.25s;
+  }
+  .step-pill.active{color:var(--blue-700); border-bottom-color:var(--blue-600);}
+  .step-pill.done{color:var(--blue-600); border-bottom-color:var(--blue-400);}
+
+  /* ===== Cards / sections ===== */
+  .screen{animation:fadein .35s ease;}
+  @media (prefers-reduced-motion: reduce){ .screen{animation:none;} }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  h2.section-title{
+    font-family:var(--font-display); font-weight:600; font-size:21px;
+    color:var(--navy-900); margin:0 0 6px;
+  }
+  p.section-sub{color:var(--gray-600); font-size:14.5px; margin:0 0 22px;}
+
+  /* ===== Form fields ===== */
+  .field{margin-bottom:18px;}
+  .field label{display:block; font-size:13.5px; font-weight:600; color:var(--blue-800); margin-bottom:6px;}
+  .field input, .field select{
+    width:100%; padding:12px 14px; font-size:15px; font-family:var(--font-body);
+    border:1.5px solid var(--blue-200); border-radius:var(--radius-sm);
+    background:var(--white); color:var(--navy-900); outline:none; transition:.2s;
+  }
+  .field input:focus, .field select:focus{border-color:var(--blue-600); box-shadow:0 0 0 3px var(--blue-50);}
+  .field .hint{font-size:12px; color:var(--gray-400); margin-top:5px;}
+  .field .error-msg{font-size:12.5px; color:var(--error); margin-top:5px; display:none;}
+  .field.invalid input, .field.invalid select{border-color:var(--error);}
+  .field.invalid .error-msg{display:block;}
+
+  /* ===== Buttons ===== */
+  .btn{
+    font-family:var(--font-body); font-weight:600; font-size:15px;
+    border-radius:999px; padding:13px 26px; cursor:pointer; border:none;
+    transition:.18s; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-primary{background:var(--blue-700); color:var(--white);}
+  .btn-primary:hover{background:var(--blue-800);}
+  .btn-primary:disabled{background:var(--blue-200); cursor:not-allowed;}
+  .btn-secondary{background:var(--white); color:var(--blue-700); border:1.5px solid var(--blue-200);}
+  .btn-secondary:hover{border-color:var(--blue-500); background:var(--blue-50);}
+  .btn-block{width:100%;}
+  .actions-row{display:flex; gap:12px; margin-top:26px;}
+  .actions-row .btn{flex:1;}
+  .link-quiet{
+    display:block; text-align:center; margin-top:22px; font-size:13.5px;
+    color:var(--gray-600); text-decoration:underline; cursor:pointer; background:none; border:none;
+  }
+
+  /* ===== Icons ===== */
+  .icon-circle{
+    width:68px; height:68px; border-radius:50%; background:var(--blue-50);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 18px;
+    border:1px solid var(--blue-100);
+  }
+  .icon{width:30px; height:30px; color:var(--blue-700); fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round;}
+
+  /* ===== Test ===== */
+  .progress-track{height:6px; background:var(--blue-100); border-radius:999px; overflow:hidden; margin-bottom:22px;}
+  .progress-fill{height:100%; background:var(--blue-600); border-radius:999px; transition:width .3s;}
+  .q-counter{font-size:12.5px; font-weight:600; color:var(--blue-600); text-align:center; margin-bottom:14px; letter-spacing:.5px;}
+  .q-text{font-family:var(--font-display); font-weight:600; font-size:19px; text-align:center; color:var(--navy-900); margin:0 0 24px;}
+  .options{display:flex; flex-direction:column; gap:10px; margin-bottom:8px;}
+  .option-card{
+    display:flex; align-items:flex-start; gap:12px; border:1.5px solid var(--blue-100);
+    border-radius:var(--radius-md); padding:13px 16px; cursor:pointer; transition:.15s; background:var(--white);
+  }
+  .option-card:hover{border-color:var(--blue-400); background:var(--blue-50);}
+  .option-card.selected{border-color:var(--blue-600); background:var(--blue-50); box-shadow:0 0 0 1px var(--blue-600) inset;}
+  .option-card input{display:none;}
+  .option-letter{
+    flex:0 0 26px; height:26px; border-radius:50%; background:var(--blue-100); color:var(--blue-700);
+    font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; margin-top:1px;
+  }
+  .option-card.selected .option-letter{background:var(--blue-600); color:var(--white);}
+  .option-text{font-size:14.5px; color:var(--navy-900); padding-top:2px;}
+  .q-warning{display:none; text-align:center; color:var(--error); font-size:13px; margin-top:10px;}
+  .q-warning.show{display:block;}
+
+  /* ===== Results ===== */
+  .result-greeting{font-size:15px; color:var(--gray-600); text-align:center; margin-bottom:4px;}
+  .result-name{font-family:var(--font-display); font-weight:700; font-size:24px; color:var(--blue-800); text-align:center; margin:0 0 18px;}
+  .justification{
+    background:var(--blue-50); border:1px solid var(--blue-100); border-radius:var(--radius-md);
+    padding:16px 18px; font-size:14.5px; color:var(--navy-900); margin-bottom:22px;
+  }
+  .career-card{
+    border:1.5px solid var(--blue-200); border-radius:var(--radius-lg); padding:24px 22px;
+    margin-bottom:18px; box-shadow:var(--shadow);
+  }
+  .area-tag{
+    display:inline-block; background:var(--blue-600); color:var(--white); font-size:11.5px; font-weight:600;
+    padding:4px 11px; border-radius:999px; margin-bottom:10px; letter-spacing:.3px;
+  }
+  .career-name{font-family:var(--font-display); font-weight:700; font-size:21px; color:var(--blue-800); margin:0 0 10px;}
+  .career-desc{font-size:14.5px; color:var(--navy-900); margin:0 0 18px;}
+  .meta-row{display:flex; gap:14px; margin-bottom:16px; flex-wrap:wrap;}
+  .meta-chip{
+    flex:1; min-width:140px; background:var(--blue-50); border:1px solid var(--blue-100);
+    border-radius:var(--radius-sm); padding:10px 12px;
+  }
+  .meta-chip .meta-label{font-size:11px; color:var(--gray-600); font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin-bottom:3px;}
+  .meta-chip .meta-value{font-size:13.5px; color:var(--navy-900); font-weight:600;}
+  .salida-text{font-size:14px; color:var(--gray-600); margin-bottom:4px;}
+  .institucion-row{
+    display:flex; align-items:flex-start; gap:10px; background:var(--blue-50);
+    border:1px solid var(--blue-100); border-radius:var(--radius-sm); padding:12px 14px; margin:14px 0 4px;
+  }
+  .institucion-row .icon{width:18px; height:18px; flex:0 0 18px; margin-top:1px;}
+  .institucion-row .institucion-text{font-size:13.5px; color:var(--navy-900);}
+  .institucion-row .institucion-text strong{color:var(--blue-800);}
+  .alt-title{font-size:12.5px; font-weight:600; color:var(--blue-700); margin:16px 0 8px;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{font-size:12.5px; color:var(--blue-700); background:var(--blue-50); border:1px solid var(--blue-200); border-radius:999px; padding:5px 12px;}
+  .disclaimer{font-size:12px; color:var(--gray-400); text-align:center; margin:18px 0 26px; line-height:1.5;}
+
+  .result-actions{display:flex; flex-direction:column; gap:12px;}
+  .icon-btn{width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+  .ods-note{
+    display:flex; gap:10px; align-items:flex-start; background:var(--blue-50);
+    border:1px solid var(--blue-200); border-radius:var(--radius-md); padding:16px 18px;
+    margin-top:14px; font-size:13px; color:var(--gray-600); line-height:1.55;
+  }
+  .ods-note .icon{width:20px; height:20px; flex:0 0 20px; margin-top:1px; color:var(--blue-600);}
+
+  footer.foot{text-align:center; font-size:12px; color:var(--gray-400); margin-top:36px;}
+
+  @media (max-width:420px){
+    .meta-row{flex-direction:column;}
+    .actions-row{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="beam"></div>
+    <div class="brand">
+      <div class="brand-mark">
+        <svg width="40" height="40" viewBox="0 0 64 64" aria-hidden="true">
+          <polygon points="32,10 40,42 24,42" fill="none" stroke="#1C4E82" stroke-width="2.5" stroke-linejoin="round"/>
+          <rect x="27" y="42" width="10" height="8" fill="none" stroke="#1C4E82" stroke-width="2.5"/>
+          <rect x="24" y="50" width="16" height="5" rx="1.5" fill="none" stroke="#1C4E82" stroke-width="2.5"/>
+          <circle cx="32" cy="8" r="3.2" fill="#3D7DC2"/>
+          <path d="M37 8c4 1 7 3 9 6M27 8c-4 1-7 3-9 6" stroke="#6FA0D6" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <h1 class="brand-name">FARO</h1>
+      </div>
+      <p class="brand-tagline">Descubrí tu futuro</p>
+      <span class="ods-badge">★ ODS 4 — Educación de Calidad</span>
+    </div>
+  </div>
+
+  <div class="stepper" id="stepper"></div>
+  <div id="screen" class="screen"></div>
+
+  <footer class="foot">Prototipo educativo orientado al ODS 4 — Educación de Calidad.</footer>
+</div>
+
+<script>
+/* ============================================================
+   DATOS
+   ============================================================ */
+const ICONS = {
+  lightbulb:`<circle cx="12" cy="9.5" r="5"/><line x1="12" y1="14.3" x2="12" y2="18"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="21" x2="14" y2="21"/>`,
+  briefcase:`<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><line x1="2" y1="13" x2="22" y2="13"/>`,
+  book:`<path d="M2 5.5s1.6-2 5.2-2 4.8 2 4.8 2v14.7s-1.4-2-4.8-2-5.2 2-5.2 2V5.5z"/><path d="M22 5.5s-1.6-2-5.2-2-4.8 2-4.8 2v14.7s1.4-2 4.8-2 5.2 2 5.2 2V5.5z"/>`,
+  users:`<circle cx="8.5" cy="8" r="3"/><path d="M2.5 19c0-3.3 2.7-5.7 6-5.7s6 2.4 6 5.7"/><circle cx="17" cy="9" r="2.3"/><path d="M14.6 13.6c2.7.5 4.6 2.6 4.9 5"/>`,
+  star:`<polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3"/>`,
+  target:`<circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>`,
+  compass:`<circle cx="12" cy="12" r="9.5"/><polygon points="15.8 8.2 13.9 13.9 8.2 15.8 10.1 10.1 15.8 8.2"/>`,
+  newspaper:`<path d="M4 3.5h12l4 4v13H4z"/><line x1="8" y1="9.5" x2="16" y2="9.5"/><line x1="8" y1="13.2" x2="16" y2="13.2"/><line x1="8" y1="16.9" x2="13" y2="16.9"/>`,
+  clock:`<circle cx="12" cy="12" r="9.5"/><polyline points="12 7 12 12 15.5 14"/>`,
+  rocket:`<path d="M12 2.2c2 2.8 3 5.7 3 8.6 0 2-1 4-3 5.8-2-1.8-3-3.8-3-5.8 0-2.9 1-5.8 3-8.6z"/><circle cx="12" cy="9" r="1.3" fill="currentColor" stroke="none"/><path d="M9.2 14.8l-2.7 3.6M14.8 14.8l2.7 3.6"/><path d="M9.2 18.4c0 1.1.9 2.3 2.8 3.4 1.9-1.1 2.8-2.3 2.8-3.4"/>`,
+  chat:`<path d="M21 11.6a8.4 8.4 0 0 1-1.9 5.4 8.5 8.5 0 0 1-6.6 3.1 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 7.1 5a8.4 8.4 0 0 1 5.4-1.9h.5a8.5 8.5 0 0 1 8 8v.5z"/>`,
+  flask:`<path d="M9 2v6.3l-5.3 9.1A2 2 0 0 0 5.4 20.5h13.2a2 2 0 0 0 1.7-3.1L15 8.3V2"/><line x1="9" y1="2" x2="15" y2="2"/><line x1="7.5" y1="14" x2="16.5" y2="14"/>`,
+  heart:`<path d="M20.8 5.6a5.4 5.4 0 0 0-7.6 0L12 6.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6l1.2 1.2L12 22l7.6-7.6 1.2-1.2a5.4 5.4 0 0 0 0-7.6z"/>`,
+  palette:`<path d="M12 2a10 10 0 1 0 0 20c1.4 0 2-.9 2-1.9 0-.5-.2-1-.5-1.4-.3-.4-.4-.8-.1-1.2.3-.4.9-.5 1.4-.5H17a4 4 0 0 0 4-4A9 9 0 0 0 12 2z"/><circle cx="7.3" cy="10.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="10.3" cy="7.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="16.7" cy="10.3" r="1.1" fill="currentColor" stroke="none"/>`,
+  send:`<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>`,
+  pin:`<path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/>`,
+  arrow:`<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>`
+};
+function iconSvg(key){
+  return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${ICONS[key]}</svg>`;
+}
+
+const QUESTIONS = [
+  {id:1, type:'main', icon:'lightbulb', text:'¿Qué actividad disfrutarías más?', options:[
+    {k:'A', t:'Resolver problemas matemáticos o tecnológicos.'},
+    {k:'B', t:'Ayudar y acompañar personas.'},
+    {k:'C', t:'Diseñar, crear o expresarte artísticamente.'},
+    {k:'D', t:'Organizar proyectos o liderar equipos.'}]},
+  {id:2, type:'main', icon:'briefcase', text:'En un trabajo ideal te gustaría…', options:[
+    {k:'A', t:'Investigar y desarrollar soluciones.'},
+    {k:'B', t:'Mejorar la calidad de vida de otros.'},
+    {k:'C', t:'Crear productos, contenidos o experiencias.'},
+    {k:'D', t:'Coordinar personas y tomar decisiones.'}]},
+  {id:3, type:'main', icon:'book', text:'¿Qué materia te gusta más?', options:[
+    {k:'A', t:'Matemática o Física.'},
+    {k:'B', t:'Biología o Psicología.'},
+    {k:'C', t:'Arte o Literatura.'},
+    {k:'D', t:'Economía o Administración.'}]},
+  {id:4, type:'main', icon:'users', text:'Si tuvieras que participar en un proyecto escolar, elegirías…', options:[
+    {k:'A', t:'Programar o construir algo.'},
+    {k:'B', t:'Realizar encuestas y analizar necesidades.'},
+    {k:'C', t:'Diseñar la presentación.'},
+    {k:'D', t:'Coordinar el equipo.'}]},
+  {id:5, type:'main', icon:'star', text:'¿Qué habilidad te identifica más?', options:[
+    {k:'A', t:'Pensamiento lógico.'},
+    {k:'B', t:'Empatía.'},
+    {k:'C', t:'Creatividad.'},
+    {k:'D', t:'Liderazgo.'}]},
+  {id:6, type:'main', icon:'target', text:'¿Qué problema te gustaría resolver?', options:[
+    {k:'A', t:'Problemas tecnológicos o ambientales.'},
+    {k:'B', t:'Problemas sociales o de salud.'},
+    {k:'C', t:'Problemas relacionados con la comunicación.'},
+    {k:'D', t:'Problemas organizacionales o económicos.'}]},
+  {id:7, type:'main', icon:'compass', text:'¿Cómo te imaginás trabajando?', options:[
+    {k:'A', t:'Con computadoras, máquinas o laboratorios.'},
+    {k:'B', t:'Con personas.'},
+    {k:'C', t:'Creando ideas y proyectos innovadores.'},
+    {k:'D', t:'Dirigiendo equipos o emprendimientos.'}]},
+  {id:8, type:'main', icon:'newspaper', text:'¿Qué noticia te llama más la atención?', options:[
+    {k:'A', t:'Avances científicos y tecnológicos.'},
+    {k:'B', t:'Salud, educación o inclusión social.'},
+    {k:'C', t:'Cultura, arte o entretenimiento.'},
+    {k:'D', t:'Economía, empresas o política.'}]},
+  {id:9, type:'main', icon:'clock', text:'¿Qué actividad elegirías para tu tiempo libre?', options:[
+    {k:'A', t:'Programar, investigar o experimentar.'},
+    {k:'B', t:'Participar en actividades solidarias.'},
+    {k:'C', t:'Dibujar, escribir o crear contenido.'},
+    {k:'D', t:'Organizar eventos o emprendimientos.'}]},
+  {id:10, type:'main', icon:'star', text:'¿Qué valorás más en una profesión?', options:[
+    {k:'A', t:'Innovación.'},
+    {k:'B', t:'Servicio a la comunidad.'},
+    {k:'C', t:'Expresión personal.'},
+    {k:'D', t:'Crecimiento y liderazgo.'}]},
+  {id:11, type:'main', icon:'rocket', text:'Si tuvieras que iniciar un proyecto, ¿qué harías?', options:[
+    {k:'A', t:'Diseñar la solución técnica.'},
+    {k:'B', t:'Identificar las necesidades de las personas.'},
+    {k:'C', t:'Crear la imagen y comunicación.'},
+    {k:'D', t:'Planificar recursos y objetivos.'}]},
+  {id:12, type:'main', icon:'chat', text:'¿Cuál de estas frases te representa más?', options:[
+    {k:'A', t:'"Me gusta entender cómo funcionan las cosas."'},
+    {k:'B', t:'"Me gusta ayudar a los demás."'},
+    {k:'C', t:'"Me gusta crear cosas nuevas."'},
+    {k:'D', t:'"Me gusta liderar y organizar."'}]},
+  {id:13, type:'refine', refineFor:'A', icon:'flask', text:'Dentro de la ciencia y la tecnología, ¿qué te interesa más?', options:[
+    {k:'A', t:'Programar y construir sistemas digitales.'},
+    {k:'B', t:'Investigar fenómenos naturales o de la salud.'},
+    {k:'C', t:'Proteger el ambiente y los recursos naturales.'},
+    {k:'D', t:'Trabajar con energía, materiales o procesos industriales.'}]},
+  {id:14, type:'refine', refineFor:'B', icon:'heart', text:'¿De qué forma te gustaría ayudar a las personas?', options:[
+    {k:'A', t:'Cuidando su salud física.'},
+    {k:'B', t:'Acompañándolas en su educación.'},
+    {k:'C', t:'Defendiendo sus derechos.'},
+    {k:'D', t:'Escuchando y orientando sus problemas.'}]},
+  {id:15, type:'refine', refineFor:'C', icon:'palette', text:'¿Cómo preferís expresar tu creatividad?', options:[
+    {k:'A', t:'A través del diseño visual.'},
+    {k:'B', t:'A través de la escritura o el periodismo.'},
+    {k:'C', t:'A través del arte y la gestión cultural.'},
+    {k:'D', t:'A través de la comunicación de organizaciones.'}]},
+  {id:16, type:'refine', refineFor:'D', icon:'briefcase', text:'Como líder, ¿qué te gustaría gestionar?', options:[
+    {k:'A', t:'Números, finanzas o negocios.'},
+    {k:'B', t:'Proyectos turísticos o de eventos.'},
+    {k:'C', t:'Equipos y organizaciones.'},
+    {k:'D', t:'Políticas públicas o asuntos sociales.'}]}
+];
+
+const AXIS_LABEL = {A:'Técnico-Científico', B:'Social y de Ayuda', C:'Creativo y Expresivo', D:'Organización y Liderazgo'};
+
+const AXIS_JUSTIFICATION = {
+  A:(n,c,t)=>`¡Hola ${n}! Tus respuestas mostraron una fuerte conexión con el pensamiento lógico, la curiosidad científica y el interés por la tecnología: elegiste esa tendencia en ${c} de las ${t} situaciones planteadas.`,
+  B:(n,c,t)=>`¡Hola ${n}! A lo largo del test priorizaste ayudar, acompañar y comprender a otras personas en ${c} de las ${t} situaciones planteadas. Tu empatía es una cualidad muy valiosa.`,
+  C:(n,c,t)=>`¡Hola ${n}! Tus respuestas reflejaron una marcada inclinación creativa y expresiva en ${c} de las ${t} situaciones planteadas. Tu sensibilidad para crear e imaginar es una fortaleza.`,
+  D:(n,c,t)=>`¡Hola ${n}! Elegiste organizar, liderar y coordinar en ${c} de las ${t} situaciones planteadas. Tu capacidad de planificación es una cualidad clave para conducir proyectos.`
+};
+
+const REFINE_BLURB = {
+  A:{A:'Además, te atrae especialmente programar y construir sistemas digitales.',
+     B:'Además, te interesa investigar fenómenos naturales o de la salud.',
+     C:'Además, te preocupa proteger el ambiente y los recursos naturales.',
+     D:'Además, te atraen la energía, los materiales y los procesos industriales.'},
+  B:{A:'Además, elegiste cuidar la salud física de las personas como forma de ayudar.',
+     B:'Además, elegiste acompañar procesos educativos como forma de ayudar.',
+     C:'Además, elegiste defender derechos como forma de ayudar.',
+     D:'Además, elegiste escuchar y orientar como forma de ayudar.'},
+  C:{A:'Además, preferís expresarte a través del diseño visual.',
+     B:'Además, preferís expresarte a través de la escritura y el periodismo.',
+     C:'Además, preferís expresarte a través del arte y la gestión cultural.',
+     D:'Además, preferís expresarte a través de la comunicación organizacional.'},
+  D:{A:'Además, como líder te interesa gestionar números, finanzas o negocios.',
+     B:'Además, como líder te interesan los proyectos turísticos o de eventos.',
+     C:'Además, como líder te interesa coordinar equipos y organizaciones.',
+     D:'Además, como líder te interesan las políticas públicas y los asuntos sociales.'}
+};
+
+const CAREERS = {
+  AA:{area:'Facultad de Ingeniería', nombre:'Tecnicatura Universitaria: Analista Programador Universitario',
+    desc:'Te forma para diseñar, programar y mantener sistemas y aplicaciones informáticas, combinando lógica, resolución de problemas y trabajo en equipo. Durante la carrera vas a aprender distintos lenguajes de programación, bases de datos y metodologías de trabajo que usan los equipos de desarrollo de software hoy en día.',
+    salida:'Podés trabajar en empresas de software, en el área de sistemas de cualquier organización o de forma independiente como desarrollador/a, ya sea en proyectos locales o de forma remota para empresas de otras provincias o países.',
+    duracion:'3 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Ingeniería, sede Comodoro Rivadavia.',
+    alt:['Ingeniería Electrónica','Ingeniería Industrial']},
+  AB:{area:'Fac. de Ciencias Naturales y de la Salud', nombre:'Bioquímica',
+    desc:'Estudia los procesos químicos de los seres vivos y aplica ese conocimiento al diagnóstico y la investigación en salud. Vas a formarte en análisis de laboratorio, microbiología y bioquímica clínica, un trabajo clave para detectar y monitorear enfermedades.',
+    salida:'Podés trabajar en laboratorios clínicos y de investigación, hospitales o industrias farmacéuticas y alimentarias.',
+    duracion:'5 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Ciencias Naturales y Ciencias de la Salud, sede Comodoro Rivadavia.',
+    alt:['Medicina','Técnico Laboratorista Universitario']},
+  AC:{area:'Fac. de Ciencias Naturales y de la Salud', nombre:'Licenciatura en Gestión Ambiental',
+    desc:'Forma profesionales capaces de planificar y gestionar el uso responsable de los recursos naturales y el cuidado del ambiente. Combina contenidos de ciencias naturales con herramientas de gestión, para evaluar el impacto ambiental de proyectos y proponer soluciones sustentables.',
+    salida:'Podés desempeñarte en organismos públicos, consultoras ambientales, empresas o áreas de sustentabilidad.',
+    duracion:'4 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Ciencias Naturales y Ciencias de la Salud, sede Comodoro Rivadavia.',
+    alt:['Licenciatura en Protección y Saneamiento Ambiental','Ingeniería Forestal']},
+  AD:{area:'Facultad de Ingeniería', nombre:'Ingeniería en Petróleo',
+    desc:'Te capacita para diseñar y optimizar procesos de extracción, producción y transporte de hidrocarburos. Vas a estudiar geología, perforación y procesos industriales aplicados específicamente a la industria del petróleo y el gas.',
+    salida:'Tiene fuerte demanda en la industria energética, especialmente en regiones petroleras como la Patagonia.',
+    duracion:'5 a 6 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Ingeniería, sede Comodoro Rivadavia.',
+    alt:['Ingeniería Química','Ingeniería Mecánica']},
+  BA:{area:'Fac. de Ciencias Naturales y de la Salud', nombre:'Medicina',
+    desc:'Forma profesionales para prevenir, diagnosticar y tratar enfermedades, acompañando la salud física de las personas. Es una carrera extensa que combina años de formación teórica con prácticas clínicas y hospitalarias cada vez más intensas.',
+    salida:'Podés trabajar en hospitales, centros de salud, consultorios particulares o en investigación médica.',
+    duracion:'6 a 7 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Ciencias Naturales y Ciencias de la Salud, sede Comodoro Rivadavia.',
+    alt:['Enfermería','Farmacia']},
+  BB:{area:'Inst. Sup. de Formación Docente N.º 802 "Edith Litwin"', nombre:'Profesorado en Educación Inicial',
+    desc:'Te prepara para acompañar el desarrollo y el aprendizaje de los más chicos, en una de las etapas más importantes de su formación. Vas a aprender didáctica, psicología del desarrollo y estrategias para enseñar jugando y respetando los tiempos de cada niño o niña.',
+    salida:'Podés trabajar en jardines de infantes, escuelas de nivel inicial públicas o privadas, y espacios comunitarios de primera infancia.',
+    duracion:'4 años aprox.',
+    institucion:'Instituto Superior de Formación Docente N.º 802 "Edith Litwin" — Comodoro Rivadavia.',
+    alt:['Licenciatura/Profesorado en Ciencias de la Educación','Licenciatura en Sociología']},
+  BC:{area:'Facultad de Ciencias Jurídicas', nombre:'Abogacía',
+    desc:'Forma profesionales para asesorar, representar y defender los derechos de personas e instituciones. La carrera combina el estudio de leyes y códigos con prácticas profesionales en distintas ramas del derecho (civil, laboral, penal, entre otras).',
+    salida:'Podés ejercer de forma independiente, en estudios jurídicos, organismos públicos o empresas.',
+    duracion:'5 a 6 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Ciencias Jurídicas, sede Comodoro Rivadavia.',
+    alt:['Procurador','Calígrafo Público']},
+  BD:{area:'Inst. Sup. de Formación Docente y Técnica N.º 81', nombre:'Psicopedagogía',
+    desc:'Te forma para acompañar los procesos de aprendizaje, identificando y abordando las dificultades de cada persona. Es una formación que cruza la psicología y la educación, pensando estrategias personalizadas para que cada estudiante pueda aprender a su manera.',
+    salida:'Podés trabajar en escuelas, gabinetes psicopedagógicos, consultorios o equipos interdisciplinarios.',
+    duracion:'3 a 4 años aprox.',
+    institucion:'Instituto Superior de Formación Docente y Técnica N.º 81 — Comodoro Rivadavia.',
+    alt:['Tecnicatura en Niñez, Adolescencia y Familia','Profesorado en Educación Especial']},
+  CA:{area:'Instituto Superior San Martín', nombre:'Diseño Gráfico',
+    desc:'Desarrolla tu capacidad para comunicar ideas a través de imágenes, tipografías y piezas visuales. Vas a trabajar con herramientas digitales de diseño y aprender a pensar marcas, afiches, packaging y contenido para redes sociales.',
+    salida:'Podés trabajar en estudios de diseño, agencias de publicidad, medios o de forma independiente.',
+    duracion:'2 a 3 años aprox.',
+    institucion:'Instituto Superior San Martín — Comodoro Rivadavia (cursada semipresencial).',
+    alt:['Diseño de Indumentaria','Marketing']},
+  CB:{area:'Fac. de Humanidades y Ciencias Sociales', nombre:'Tecnicatura en Periodismo',
+    desc:'Te prepara para investigar, redactar y comunicar información a través de distintos medios. Aprendés técnicas de entrevista, redacción periodística y producción de contenidos para diarios, radio, televisión y plataformas digitales.',
+    salida:'Podés trabajar en medios gráficos, digitales, radiales, televisivos o en comunicación institucional.',
+    duracion:'3 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Humanidades y Ciencias Sociales, sede Comodoro Rivadavia.',
+    alt:['Licenciatura en Letras','Licenciatura en Comunicación Social']},
+  CC:{area:'Fac. de Humanidades y Ciencias Sociales', nombre:'Tecnicatura en Gestión y Mediación Cultural',
+    desc:'Forma profesionales para planificar, organizar y promover proyectos artísticos y culturales. Vas a aprender a diseñar festivales, exposiciones y actividades culturales que acerquen el arte a la comunidad.',
+    salida:'Podés trabajar en centros culturales, museos, áreas de cultura de municipios o producción de eventos.',
+    duracion:'3 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Humanidades y Ciencias Sociales, sede Comodoro Rivadavia.',
+    alt:['Tecnicatura en Turismo','Profesorado en Letras']},
+  CD:{area:'Instituto Superior San Martín', nombre:'Marketing',
+    desc:'Te capacita para pensar estrategias de comunicación, marca y ventas para empresas y organizaciones. Combina creatividad con herramientas de análisis para entender qué necesita un público y cómo comunicárselo.',
+    salida:'Podés trabajar en áreas de marketing, comunicación o redes sociales de empresas, agencias o emprendimientos propios.',
+    duracion:'2 a 3 años aprox.',
+    institucion:'Instituto Superior San Martín — Comodoro Rivadavia (cursada semipresencial).',
+    alt:['Tecnicatura en Comunicación de las Organizaciones','Licenciatura en Administración']},
+  DA:{area:'Facultad de Ciencias Económicas', nombre:'Contador Público',
+    desc:'Forma profesionales para administrar, controlar y asesorar en temas contables, impositivos y financieros. Vas a aprender a llevar las cuentas de empresas y personas, liquidar impuestos y asesorar en decisiones financieras.',
+    salida:'Podés trabajar en estudios contables, empresas, organismos públicos o de forma independiente.',
+    duracion:'5 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Ciencias Económicas, sede Comodoro Rivadavia.',
+    alt:['Tecnicatura Universitaria Contable','Licenciatura en Economía']},
+  DB:{area:'Facultad de Ciencias Económicas', nombre:'Licenciatura en Administración de Empresas Turísticas',
+    desc:'Te prepara para planificar y gestionar proyectos y servicios vinculados al turismo. Estudiás cómo organizar viajes, eventos y experiencias, y cómo gestionar hoteles, agencias y emprendimientos turísticos.',
+    salida:'Podés trabajar en agencias de viajes, hotelería, organismos de turismo o emprendimientos propios.',
+    duracion:'4 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Ciencias Económicas, sede Comodoro Rivadavia.',
+    alt:['Tecnicatura en Turismo','Licenciatura en Administración']},
+  DC:{area:'Facultad de Ciencias Económicas', nombre:'Licenciatura en Administración',
+    desc:'Forma profesionales para planificar, organizar y dirigir equipos, proyectos y organizaciones. Vas a estudiar gestión de recursos humanos, finanzas y procesos, con foco en tomar buenas decisiones para que un proyecto funcione.',
+    salida:'Podés trabajar en empresas, organismos públicos o liderar tu propio emprendimiento.',
+    duracion:'4 a 5 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Ciencias Económicas, sede Comodoro Rivadavia.',
+    alt:['Tecnicatura en Gestión Universitaria','Contador Público']},
+  DD:{area:'Fac. de Humanidades y Ciencias Sociales', nombre:'Licenciatura en Ciencia Política',
+    desc:'Te prepara para analizar procesos políticos y participar en el diseño de políticas públicas. Estudiás cómo funcionan los gobiernos, los partidos políticos y las instituciones, para entender y mejorar la vida en sociedad.',
+    salida:'Podés trabajar en organismos públicos, partidos políticos, organizaciones sociales o de investigación.',
+    duracion:'4 a 5 años aprox.',
+    institucion:'Universidad Nacional de la Patagonia San Juan Bosco (UNSJB) — Facultad de Humanidades y Ciencias Sociales, sede Comodoro Rivadavia.',
+    alt:['Licenciatura en Sociología','Tecnicatura en Gestión Universitaria']}
+};
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+const state = {
+  step:1,
+  qIndex:0,
+  answers:{},
+  userData:{nombre:'', edad:'', formacion:''},
+  showQWarning:false
+};
+
+const mainQuestions = QUESTIONS.filter(q=>q.type==='main');
+const totalQ = QUESTIONS.length;
+
+/* ============================================================
+   RENDER PRINCIPAL
+   ============================================================ */
+function render(){
+  renderStepper();
+  const el = document.getElementById('screen');
+  if(state.step===1) el.innerHTML = renderStep1();
+  else if(state.step===2) el.innerHTML = renderStep2();
+  else el.innerHTML = renderStep3();
+  el.classList.remove('screen'); void el.offsetWidth; el.classList.add('screen');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderStepper(){
+  const labels = ['Datos','Test','Resultado'];
+  document.getElementById('stepper').innerHTML = labels.map((l,i)=>{
+    const n=i+1;
+    let cls='step-pill';
+    if(n===state.step) cls+=' active';
+    else if(n<state.step) cls+=' done';
+    return `<div class="${cls}">${n}. ${l}</div>`;
+  }).join('');
+}
+
+/* ============================================================
+   PASO 1 — DATOS PERSONALES
+   ============================================================ */
+function renderStep1(){
+  const d = state.userData;
+  return `
+    <h2 class="section-title">Contános un poco sobre vos</h2>
+    <p class="section-sub">Estos datos nos ayudan a personalizar tu resultado. No te vamos a pedir información de más.</p>
+    <div id="form1">
+      <div class="field" id="f-nombre">
+        <label for="in-nombre">Nombre</label>
+        <input id="in-nombre" type="text" value="${escapeHtml(d.nombre)}" placeholder="Ej: Camila Pérez">
+        <div class="error-msg">Contanos tu nombre para continuar.</div>
+      </div>
+      <div class="field" id="f-edad">
+        <label for="in-edad">Edad</label>
+        <input id="in-edad" type="number" min="10" max="99" value="${escapeHtml(d.edad)}" placeholder="Ej: 17">
+        <div class="error-msg">Ingresá una edad válida (entre 10 y 99 años).</div>
+      </div>
+      <div class="field" id="f-formacion">
+        <label for="in-formacion">Formación secundaria</label>
+        <input id="in-formacion" type="text" value="${escapeHtml(d.formacion)}" placeholder="Ej: Bachiller, Técnico en Informática, Perito Mercantil...">
+        <div class="hint">Contanos con qué título te egresaste (o te vas a egresar) de la secundaria.</div>
+        <div class="error-msg">Contanos con qué título te egresaste de la secundaria.</div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="submitStep1()">Comenzar el test ${iconSvg('arrow')}</button>
+  `;
+}
+
+function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function submitStep1(){
+  const nombre = document.getElementById('in-nombre').value.trim();
+  const edad = document.getElementById('in-edad').value.trim();
+  const formacion = document.getElementById('in-formacion').value.trim();
+
+  let valid = true;
+  toggleFieldError('f-nombre', nombre.length===0); if(nombre.length===0) valid=false;
+  const edadNum = Number(edad);
+  const edadOk = edad.length>0 && Number.isFinite(edadNum) && edadNum>=10 && edadNum<=99;
+  toggleFieldError('f-edad', !edadOk); if(!edadOk) valid=false;
+  toggleFieldError('f-formacion', formacion.length===0); if(formacion.length===0) valid=false;
+
+  if(!valid) return;
+
+  state.userData = {nombre, edad, formacion};
+  state.step = 2;
+  state.qIndex = 0;
+  render();
+}
+
+function toggleFieldError(id, isInvalid){
+  const f = document.getElementById(id);
+  if(!f) return;
+  f.classList.toggle('invalid', isInvalid);
+}
+
+/* ============================================================
+   PASO 2 — TEST VOCACIONAL
+   ============================================================ */
+function renderStep2(){
+  const q = QUESTIONS[state.qIndex];
+  const pct = Math.round(((state.qIndex+1)/totalQ)*100);
+  const selected = state.answers[q.id];
+  const optionsHtml = q.options.map(o=>{
+    const isSel = selected===o.k;
+    return `
+      <label class="option-card${isSel?' selected':''}" for="opt-${q.id}-${o.k}">
+        <input type="radio" id="opt-${q.id}-${o.k}" name="q${q.id}" value="${o.k}" ${isSel?'checked':''} onchange="selectOption(${q.id}, '${o.k}')">
+        <span class="option-letter">${o.k}</span>
+        <span class="option-text">${o.t}</span>
+      </label>`;
+  }).join('');
+
+  const isLast = state.qIndex===totalQ-1;
+  const isFirst = state.qIndex===0;
+
+  return `
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="q-counter">PREGUNTA ${state.qIndex+1} DE ${totalQ}</div>
+    <div class="icon-circle">${iconSvg(q.icon)}</div>
+    <p class="q-text">${q.text}</p>
+    <div class="options">${optionsHtml}</div>
+    <div class="q-warning${state.showQWarning?' show':''}">Elegí una opción para continuar.</div>
+    <div class="actions-row">
+      ${isFirst? `<button class="btn btn-secondary" onclick="goToStep1Edit()">Volver</button>` : `<button class="btn btn-secondary" onclick="prevQuestion()">Anterior</button>`}
+      <button class="btn btn-primary" onclick="nextQuestion()">${isLast?'Ver mi resultado':'Siguiente'} ${iconSvg('arrow')}</button>
+    </div>
+  `;
+}
+
+function selectOption(qid, key){
+  state.answers[qid] = key;
+  state.showQWarning = false;
+  render();
+}
+
+function nextQuestion(){
+  const q = QUESTIONS[state.qIndex];
+  if(!state.answers[q.id]){
+    state.showQWarning = true;
+    render();
+    return;
+  }
+  state.showQWarning = false;
+  if(state.qIndex < totalQ-1){
+    state.qIndex++;
+    render();
+  } else {
+    state.step = 3;
+    render();
+  }
+}
+
+function prevQuestion(){
+  state.showQWarning = false;
+  if(state.qIndex>0){ state.qIndex--; render(); }
+}
+
+function goToStep1Edit(){
+  state.step = 1;
+  render();
+}
+
+/* ============================================================
+   PASO 3 — RESULTADO
+   ============================================================ */
+function computeResult(){
+  const counts = {A:0,B:0,C:0,D:0};
+  mainQuestions.forEach(q=>{
+    const a = state.answers[q.id];
+    if(a) counts[a]++;
+  });
+  const total = mainQuestions.length;
+  let winner = 'A';
+  ['A','B','C','D'].forEach(k=>{ if(counts[k] > counts[winner]) winner = k; });
+
+  const refineQ = QUESTIONS.find(q=>q.type==='refine' && q.refineFor===winner);
+  const refineAnswer = state.answers[refineQ.id] || 'A';
+  const careerKey = winner + refineAnswer;
+  const career = CAREERS[careerKey];
+
+  return {
+    winner, counts, total, career,
+    justification: AXIS_JUSTIFICATION[winner](state.userData.nombre || 'futuro/a profesional', counts[winner], total) + ' ' + REFINE_BLURB[winner][refineAnswer]
+  };
+}
+
+function renderStep3(){
+  const r = computeResult();
+  const c = r.career;
+  const nombre = escapeHtml(state.userData.nombre || '');
+
+  return `
+    <p class="result-greeting">Esto es lo que descubrimos sobre vos</p>
+    <h2 class="result-name">¡Listo, ${nombre}!</h2>
+
+    <div class="justification">${r.justification}</div>
+
+    <div class="career-card">
+      <span class="area-tag">${c.area}</span>
+      <h3 class="career-name">${c.nombre}</h3>
+      <p class="career-desc">${c.desc}</p>
+      <div class="meta-row">
+        <div class="meta-chip">
+          <div class="meta-label">Duración</div>
+          <div class="meta-value">${c.duracion}</div>
+        </div>
+        <div class="meta-chip">
+          <div class="meta-label">Área principal</div>
+          <div class="meta-value">${AXIS_LABEL[r.winner]}</div>
+        </div>
+      </div>
+      <p class="salida-text"><strong>Salida laboral:</strong> ${c.salida}</p>
+      <div class="institucion-row">
+        ${iconSvg('pin')}
+        <div class="institucion-text"><strong>Dónde estudiarla:</strong> ${c.institucion}</div>
+      </div>
+      <div class="alt-title">También podrían interesarte</div>
+      <div class="chips">${c.alt.map(a=>`<span class="chip">${a}</span>`).join('')}</div>
+    </div>
+
+    <p class="disclaimer">Esta es una orientación general basada en tus respuestas, no un diagnóstico definitivo. Te recomendamos confirmar planes de estudio, duración y modalidad directamente con la universidad o instituto elegido.</p>
+
+    <div class="result-actions">
+      <a class="btn btn-secondary btn-block" href="https://agenda2030lac.org/es/ods/4-educacion-de-calidad" target="_blank" rel="noopener">Conocer más sobre el ODS 4 ${iconSvg('arrow')}</a>
+      <div class="ods-note">
+        ${iconSvg('star')}
+        <div>Este test ayuda a cumplir una de las metas del ODS 4: ampliar el acceso igualitario a la educación técnica, profesional y universitaria (incluyendo la formación a distancia). Con esta mini app buscamos facilitar la difícil decisión de elegir no solo una carrera, sino también una institución en dónde estudiarla, para ayudarte a decidir tu futuro.</div>
+      </div>
+    </div>
+    <button class="link-quiet" onclick="restart()">Volver a empezar</button>
+  `;
+}
+
+function restart(){
+  state.step = 1;
+  state.qIndex = 0;
+  state.answers = {};
+  state.showQWarning = false;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
